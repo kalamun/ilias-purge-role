@@ -1,3 +1,5 @@
+purge_role_config#:#Configuration
+role#:#Role
 day#:#Day
 month#:#Month
 month_1#:#January
@@ -12,8 +14,5 @@ month_9#:#September
 month_10#:#October
 month_11#:#November
 month_12#:#December
-purge_active#:Purge active
+purge_active#:#Purge is active
 save#:#Save modifications
-configuration#:#Configuration
-configuration_saved#:#Configuration saved
-expiration_date#:#Expiration date

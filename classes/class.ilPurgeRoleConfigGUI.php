@@ -11,11 +11,6 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
     const LANG_MODULE = "purgerole_";
     const TAB_CONFIGURATION = "show_purge_role_config";
     const CMD_SAVE = "savePurgeRole";
-    const CMD_LIST_DEV_TOOLS = "listDevTools";
-    const CMD_RELOAD_CTRL_STRUCTURE = "reloadCtrlStructure";
-    const CMD_RELOAD_DATABASE = "reloadDatabase";
-    const CMD_RELOAD_LANGUAGES = "reloadLanguages";
-    const CMD_RELOAD_PLUGIN_XML = "reloadPluginXml";
     const TAB_DEV_TOOLS = "dev_tools";
 
     const TYPE_GLOBAL_AU = 1;
@@ -39,7 +34,6 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
       $this->dic = $DIC;
       $this->plugin = ilPurgeRolePlugin::getInstance();
       $this->lng = $this->dic->language();
-      // $this->lng->loadLanguageModule("assessment");
       $this->request = $this->dic->http()->request();
       $this->user = $this->dic->user();
       $this->ctrl = $this->dic->ctrl();
@@ -79,45 +73,10 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
 		$ilTabs->setTabActive(self::TAB_CONFIGURATION);
 	}
 
-    protected function listDevTools() : void
-    {
-        //$this->dic->tabs()->activateTab(self::TAB_DEV_TOOLS);
-
-        $this->dic->toolbar()->addComponent($this->dic->ui()->factory()->button()->standard($this->plugin->txt("reload_languages", self::LANG_MODULE),
-            $this->dic->ctrl()->getLinkTarget($this, self::CMD_RELOAD_LANGUAGES)));
-
-        $this->dic->toolbar()->addComponent($this->dic->ui()->factory()->button()->standard($this->plugin->txt("reload_ctrl_structure", self::LANG_MODULE),
-            $this->dic->ctrl()->getLinkTarget($this, self::CMD_RELOAD_CTRL_STRUCTURE)));
-
-        $this->dic->toolbar()->addComponent($this->dic->ui()->factory()->button()->standard($this->plugin->txt("reload_plugin_xml", self::LANG_MODULE),
-            $this->dic->ctrl()->getLinkTarget($this, self::CMD_RELOAD_PLUGIN_XML)));
-
-        $this->dic->toolbar()->addComponent($this->dic->ui()->factory()->button()->standard($this->plugin->txt("reload_database", self::LANG_MODULE),
-            $this->dic->ctrl()->getLinkTarget($this, self::CMD_RELOAD_DATABASE)));
-
-        //self::output()->output("");
-    }
-
-    protected function reloadDatabase() : void
-    {
-        $this->plugin->reloadDatabase();
-/* 
-        ilUtil::sendSuccess($this->plugin->txt("reloaded_database", self::LANG_MODULE) . "<br><br>" . Closure::bind(function () : string {
-                return $this->message;
-            }, $this->plugin->getPluginObject(), ilPlugin::class)(), true);
-        self::dic()->ctrl()->redirect($this);
-    */
-    }
-
-
     protected function configure()/*: void*/
     {
         global $tpl, $ilCtrl, $lng, $DIC, $ilDB;
 
-/*
-        $this->dic->toolbar()->addComponent($this->dic->ui()->factory()->button()->standard($this->plugin->txt("save"),
-            $this->dic->ctrl()->getLinkTarget($this, self::CMD_SAVE)));
- */
 		require_once("./Services/Table/classes/class.ilTableGUI.php");
 		require_once("./Services/Form/classes/class.ilFormGUI.php");
 
@@ -125,31 +84,6 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
         $table_prefix = "purgerole_";
         $table_name = $table_prefix . "rules";
 
-/* 		$form = new ilFormGUI();
-		$form->setFormAction($ilCtrl->getFormAction($this));
-
-        $tbl = new ilTableGUI();
-        $tbl->setStyle('table', 'std');
-        $tbl->setTitle("title", "", "title");
-        $tbl->disable("title");
-        $tbl->disable("icon");
-
-        $tbl->setHeaderNames([
-            [["0000", "diocane", "dioporco"]]
-        ]);
-        $tbl->setHeaderVars([
-            [["0000", "diocane", "dioporco"]]
-        ]);
-
-        $tbl->setData([
-            ["0000", "diocane", "dioporco"]
-        ]);
-
-        $tbl->setTemplate($tpl);
-        $tpl->setContent($tbl->render());
-
-        return false;
- */
         $days = [];
         for($i = 1; $i <= 31; $i++) {
             $days[$i] = $i;
@@ -159,26 +93,6 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
         for($i = 1; $i <= 12; $i++) {
             $months[$i] = $this->plugin->txt("month_" . $i);
         }
-/* 
-        $select_input = new ilSelectInputGUI($this->plugin->txt(self::LANG_MODULE . "day", self::LANG_MODULE), $class);
-        $select_input->setOptions($days);
-        $select_input->setValue(1);
-        $form->addItem($select_input);
-
-        $select_input = new ilSelectInputGUI($this->plugin->txt(self::LANG_MODULE . "month", self::LANG_MODULE), $class);
-        $select_input->setOptions($months);
-        $select_input->setValue(1);
-        $form->addItem($select_input);
-
-        $form->setTitle($this->plugin->txt('test_evaluation_settings'));
-        $form->addCommandButton("saveTestSettings", $lng->txt(self::LANG_MODULE . "save", self::LANG_MODULE));
-
-		$tpl->setContent($form->getHTML());
-
-        return true;
- */
-        //self::listDevTools();
-
 
         $rbacreview = $DIC['rbacreview'];
         $ilUser = $DIC['ilUser'];
@@ -268,12 +182,15 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
         <form action="<?= $form_action; ?>" method="post">
             <div class="ilTableOuter">
                 <div class="table-responsive">
+                    <div class="submit ilTableCommandRow form-inline">
+                        <input type="submit" class="btn btn-default" value="<?= $this->plugin->txt("save"); ?>" />
+                    </div>
                     <table class="table table-striped fullwidth">
                         <thead>
                             <tr>
-                                <th>Role</th>
-                                <th>Day</th>
-                                <th>Month</th>
+                                <th><?= $this->plugin->txt("role"); ?></th>
+                                <th><?= $this->plugin->txt("day"); ?></th>
+                                <th><?= $this->plugin->txt("month"); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -320,8 +237,8 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
                         ?>
                         </tbody>
                     </table>
-                    <div class="submit">
-                        <input type="submit" value="<?= $this->plugin->txt("Save"); ?>" />
+                    <div class="submit ilTableCommandRow form-inline">
+                        <input type="submit" class="btn btn-default" value="<?= $this->plugin->txt("save"); ?>" />
                     </div>
                 </div>
             </div>
@@ -331,50 +248,6 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
         $output = ob_get_clean();
 
         $tpl->setContent($output);
-    }
-
-    protected function updateConfigure()/*: void*/
-    {
-        self::configure();
-
-        $form = "";
-
-        if (!$form->storeForm()) {
-            self::output()->output($form);
-
-            return;
-        }
-
-        ilUtil::sendSuccess(self::plugin()->txt("configuration_saved", self::LANG_MODULE), true);
-
-    }
-
-    protected function reloadCtrlStructure() : void
-    {
-        self::configure();
-
-        //$this->plugin->reloadCtrlStructure();
-
-        ilUtil::sendSuccess($this->plugin->txt("reloaded_ctrl_structure", self::LANG_MODULE), true);
-
-        //$this->dic->ctrl()->redirect($this);
-        $this->ctrl->redirectToURL($this->dic->ctrl()->getTargetScript() . "?ref_id=" . $this->dic->database()
-                                                                                                ->queryF('SELECT ref_id FROM object_data INNER JOIN object_reference ON object_data.obj_id=object_reference.obj_id WHERE type=%s',
-                                                                                                    [ilDBConstants::T_TEXT], ["cmps"])
-                                                                                                ->fetchAssoc()["ref_id"] . "&admin_mode=settings&ctype=" . $this->plugin->getComponentType()
-            . "&cname=" . $this->plugin->getComponentName()
-            . "&slot_id=" . $this->plugin->getSlotId() . "&pname=" . $this->plugin->getPluginName() . "&cmdClass="
-            . static::class . "&cmdNode=" . implode(":", array_map([$this, "reloadCtrlStructureGetNewNodeId"], [
-                ilAdministrationGUI::class,
-                ilObjComponentSettingsGUI::class,
-                ilPurgeRolePlugin::class,
-                static::class
-            ])) . "&baseClass=" . ilAdministrationGUI::class);
-    }
-
-    private function reloadCtrlStructureGetNewNodeId(string $class) : string
-    {
-        return strval($this->dic->database()->fetchAssoc($this->dic->database()->queryF("SELECT cid FROM ctrl_classfile WHERE class=%s", [ilDBConstants::T_TEXT], [strtolower($class)]))["cid"]);
     }
 
 }
