@@ -12,7 +12,7 @@ class ilPurgeRolePlugin extends ilCronHookPlugin
     const PLUGIN_NAME = "PurgeRole";
     protected static $instance = null;
     private static $plugin_object = null;
-
+    
     public function __construct()
     {
         parent::__construct();
@@ -44,6 +44,11 @@ class ilPurgeRolePlugin extends ilCronHookPlugin
 
     protected function beforeUninstall() : bool
     {
+        global $ilDB;
+        $table_name = "cron_crnhk_xpurgerole";
+        if($ilDB->tableExists($table_name)) {
+            $ilDB->query("DROP TABLE " . $table_name);
+        }
         return parent::beforeUninstall();
     }
 }

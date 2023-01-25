@@ -81,8 +81,7 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
 		require_once("./Services/Form/classes/class.ilFormGUI.php");
 
         $form_action = $ilCtrl->getFormAction($this);
-        $table_prefix = "purgerole_";
-        $table_name = $table_prefix . "rules";
+        $table_name = "cron_crnhk_xpurgerole";
 
         $days = [];
         for($i = 1; $i <= 31; $i++) {

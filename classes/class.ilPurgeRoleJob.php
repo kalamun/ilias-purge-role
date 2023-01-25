@@ -59,8 +59,7 @@ class ilPurgeRoleJob extends ilCronJob
     $rbacreview = $DIC['rbacreview'];
     $rbacadmin = $DIC['rbacadmin'];
 
-    $table_prefix = "purgerole_";
-    $table_name = $table_prefix . "rules";
+    $table_name = "cron_crnhk_xpurgerole";
 
     $current_day = date("j");
     $current_month = date("n");
