@@ -110,7 +110,7 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
         );
         
         $counter = 0;
-        $rows = array();
+        $rows = [];
         foreach ((array) $role_list as $role) {
             if (
                 $role['parent'] and
@@ -195,6 +195,7 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
                         <tbody>
                         <?php
                         foreach($rows as $row) {
+                            if($row['obj_id'] == 2) continue; // skip Administrator
                             if($row['rtype'] != self::TYPE_GLOBAL_AU && $row['rtype'] != self::TYPE_GLOBAL_UD) continue;
                             ?>
                             <tr>
