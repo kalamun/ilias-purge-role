@@ -9,6 +9,11 @@ if(!$ilDB->tableExists($table_name)) {
 			'length' => 4,
 			'notnull' => true
 		],
+		'rule_id' => [
+			'type' => 'integer',
+			'length' => 2,
+			'notnull' => true
+		],
 		'day' => [
 			'type' => 'integer',
 			'length' => 2,

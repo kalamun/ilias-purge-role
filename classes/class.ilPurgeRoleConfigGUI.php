@@ -161,11 +161,12 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
 
         // TODO: find a proper way to save data
         if( !empty($_GET['rtoken']) && !empty($_POST['purge']) ) {
+            $ilDB->query("TRUNCATE TABLE " . $table_name);
             foreach( $_POST['purge'] as $role_id => $settings ) {
-                $ilDB->replace($table_name, [
-                    "role_id" => ["integer", $role_id] // primary keys
-                ], [
-                    "day" => ["integer", intval($settings['day'])], // other values
+                $ilDB->insert($table_name, [
+                    "role_id" => ["integer", $role_id],
+                    "rule_id" => ["integer", 0],
+                    "day" => ["integer", intval($settings['day'])],
                     "month" => ["integer", intval($settings['month'])],
                     "active" => ["integer", intval(!empty($settings['active']))],
                 ]);
