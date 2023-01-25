@@ -1,0 +1,18 @@
+purge_role_config#:#Configuration
+role#:#Rôle
+day#:#Jour
+month#:#Mois
+month_1#:#Janvier
+month_2#:#Février
+month_3#:#Mars
+month_4#:#Avril
+month_5#:#Mai
+month_6#:#Juin
+month_7#:#Juillet
+month_8#:#Août
+month_9#:#Septembre
+month_10#:#Octobre
+month_11#:#Novembre
+month_12#:#Décembre
+purge_active#:#La vidange est active
+save#:#Enregistrer les modifications
