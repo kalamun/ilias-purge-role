@@ -218,7 +218,7 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
                                     $select_input = new ilSelectInputGUI($this->plugin->txt("month"), $class);
                                     $select_input->setPostVar("purge[" . $row['obj_id'] . "][month]");
                                     $select_input->setOptions($months);
-                                    $select_input->setValue($db_values[ $row['obj_id'] ]['day']);
+                                    $select_input->setValue($db_values[ $row['obj_id'] ]['month']);
                                     echo $select_input->render();
                                     ?>
                                 </td>
