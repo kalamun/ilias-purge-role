@@ -161,15 +161,31 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
 
         // TODO: find a proper way to save data
         if( !empty($_GET['rtoken']) && !empty($_POST['purge']) ) {
-            $ilDB->query("TRUNCATE TABLE " . $table_name);
             foreach( $_POST['purge'] as $role_id => $settings ) {
-                $ilDB->insert($table_name, [
+                $db_query = $ilDB->query("SELECT * FROM " . $table_name . " WHERE role_id=" . intval($role_id));
+                $db_row = $ilDB->fetchAssoc($db_query);
+          
+                if( !empty($db_row['role_id']) ) {
+                  // update
+                  $ilDB->update($table_name, [
+                    "day" => ["integer", intval($settings['day'])],
+                    "month" => ["integer", intval($settings['month'])],
+                    "active" => ["integer", intval($settings['active'])],
+                  ], [
+                    "role_id" => ["integer", $role_id],
+                    "rule_id" => ["integer", 0],
+                  ]);
+          
+                } else {
+                  // insert new
+                  $ilDB->insert($table_name, [
                     "role_id" => ["integer", $role_id],
                     "rule_id" => ["integer", 0],
                     "day" => ["integer", intval($settings['day'])],
                     "month" => ["integer", intval($settings['month'])],
                     "active" => ["integer", intval(!empty($settings['active']))],
-                ]);
+                  ]);
+                }
             }
         }
 
@@ -197,7 +213,7 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
                         <?php
                         foreach($rows as $row) {
                             if($row['obj_id'] == 2) continue; // skip Administrator
-                            if($row['rtype'] != self::TYPE_GLOBAL_AU && $row['rtype'] != self::TYPE_GLOBAL_UD) continue;
+                            if($row['rtype'] != self::TYPE_GLOBAL_AU && $row['rtype'] != self::TYPE_GLOBAL_UD && !isset($db_values[ $row['obj_id'] ])) continue;
                             ?>
                             <tr>
                                 <td>
