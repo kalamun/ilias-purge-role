@@ -10,22 +10,27 @@ require_once('class.ilPurgeRoleJob.php');
 class ilPurgeRolePlugin extends ilCronHookPlugin
 {
     const PLUGIN_NAME = "PurgeRole";
+    const PLUGIN_ID = "xpurgerole";
     protected static $instance = null;
     private static $plugin_object = null;
     
     public function __construct()
     {
-        parent::__construct();
+        global $DIC;
+        $this->db = $DIC->database();
+        parent::__construct(
+            $this->db, $DIC["component.repository"], self::PLUGIN_ID
+        );
     }
 
     public static function getInstance() : self
     {
         if (self::$instance === null) {
             self::$instance = new self();
-        }    
+        }
 
         return self::$instance;
-    }    
+    }
 
     public function getPluginName() : string
     {
@@ -37,7 +42,7 @@ class ilPurgeRolePlugin extends ilCronHookPlugin
         return [new ilPurgeRoleJob()];
     }
 
-    public function getCronJobInstance(/*string*/ $a_job_id)/*: ?ilCronJob*/
+    public function getCronJobInstance(string $a_job_id): ilCronJob
     {
         return new ilPurgeRoleJob();
     }

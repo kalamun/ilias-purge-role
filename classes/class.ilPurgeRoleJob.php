@@ -39,12 +39,17 @@ class ilPurgeRoleJob extends ilCronJob
       return 1;
   }
 
+  public function getDescription(): string
+  {
+      return "";
+  }
+
   public function hasCustomSettings(): bool
   {
       return false;
   }
 
-  public function addCustomSettingsToForm(ilPropertyFormGUI $a_form)
+  public function addCustomSettingsToForm(ilPropertyFormGUI $a_form):void
   {
   }
 

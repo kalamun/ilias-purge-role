@@ -1,8 +1,10 @@
 <?php
-
 /**
- * Config screen
+ * Class ilPurgeRoleConfigGUI
+ * @author            Roberto Pasini <bonjour@kalamun.net>
+ * @ilCtrl_IsCalledBy ilPurgeRoleConfigGUI: ilObjComponentSettingsGUI
  */
+
 class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
 
     const PLUGIN_CLASS_NAME = ilPurgeRolePlugin::class;
@@ -40,7 +42,7 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
       $this->object = $this->dic->object();
     }
     
-    public function performCommand(/*string*/ $cmd)/*:void*/
+    public function performCommand(string $cmd):void
     {
         $this->plugin = $this->getPluginObject();
         $this->initTabs();
@@ -73,7 +75,7 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
 		$ilTabs->setTabActive(self::TAB_CONFIGURATION);
 	}
 
-    protected function configure()/*: void*/
+    protected function configure(): void
     {
         global $tpl, $ilCtrl, $lng, $DIC, $ilDB;
 
@@ -96,8 +98,6 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
         $rbacreview = $DIC['rbacreview'];
         $ilUser = $DIC['ilUser'];
         
-        $this->role_folder_id = $role_folder_id;
-
         include_once './Services/AccessControl/classes/class.ilObjRole.php';
         
         $type = ilRbacReview::FILTER_ALL;
@@ -122,11 +122,6 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
                 continue;
             }
             $title = ilObjRole::_getTranslation($role['title']);
-            if (strlen($filter_orig)) {
-                if (stristr($title, $filter_orig) == false) {
-                    continue;
-                }
-            }
             
             $rows[$counter]['title_orig'] = $role['title'];
             $rows[$counter]['title'] = $title;
@@ -168,9 +163,9 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
                 if( !empty($db_row['role_id']) ) {
                   // update
                   $ilDB->update($table_name, [
-                    "day" => ["integer", intval($settings['day'])],
-                    "month" => ["integer", intval($settings['month'])],
-                    "active" => ["integer", intval($settings['active'])],
+                    "day" => ["integer", intval($settings['day'] ?? "")],
+                    "month" => ["integer", intval($settings['month'] ?? "")],
+                    "active" => ["integer", intval(!empty($settings['active']))],
                   ], [
                     "role_id" => ["integer", $role_id],
                     "rule_id" => ["integer", 0],
@@ -181,8 +176,8 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
                   $ilDB->insert($table_name, [
                     "role_id" => ["integer", $role_id],
                     "rule_id" => ["integer", 0],
-                    "day" => ["integer", intval($settings['day'])],
-                    "month" => ["integer", intval($settings['month'])],
+                    "day" => ["integer", intval($settings['day'] ?? "")],
+                    "month" => ["integer", intval($settings['month'] ?? "")],
                     "active" => ["integer", intval(!empty($settings['active']))],
                   ]);
                 }
@@ -222,28 +217,34 @@ class ilPurgeRoleConfigGUI extends ilPluginConfigGUI {
                                 </td>
                                 <td style="vertical-align: middle;">
                                     <?php
-                                    $select_input = new ilSelectInputGUI($this->plugin->txt("day"), $class);
+                                    $select_input = new ilSelectInputGUI($this->plugin->txt("day"));
                                     $select_input->setPostVar("purge[" . $row['obj_id'] . "][day]");
                                     $select_input->setOptions($days);
-                                    $select_input->setValue($db_values[ $row['obj_id'] ]['day']);
+                                    if (isset($db_values[ $row['obj_id'] ]['day'])) {
+                                        $select_input->setValue($db_values[ $row['obj_id'] ]['day']);
+                                    }
                                     echo $select_input->render();
                                     ?>
                                 </td>
                                 <td style="vertical-align: middle;">
                                     <?php
-                                    $select_input = new ilSelectInputGUI($this->plugin->txt("month"), $class);
+                                    $select_input = new ilSelectInputGUI($this->plugin->txt("month"));
                                     $select_input->setPostVar("purge[" . $row['obj_id'] . "][month]");
                                     $select_input->setOptions($months);
-                                    $select_input->setValue($db_values[ $row['obj_id'] ]['month']);
+                                    if (isset($db_values[ $row['obj_id'] ]['month'])) {
+                                        $select_input->setValue($db_values[ $row['obj_id'] ]['month']);
+                                    }
                                     echo $select_input->render();
                                     ?>
                                 </td>
                                 <td style="vertical-align: middle;">
                                     <?php
-                                    $checkbox_input = new ilCheckboxInputGUI($this->plugin->txt("purge_active"), $class);
+                                    $checkbox_input = new ilCheckboxInputGUI($this->plugin->txt("purge_active"));
                                     $checkbox_input->setPostVar("purge[" . $row['obj_id'] . "][active]");
                                     $checkbox_input->setOptionTitle($this->plugin->txt("purge_active"));
-                                    $checkbox_input->setChecked(!!$db_values[ $row['obj_id'] ]['active']);
+                                    if (isset($db_values[ $row['obj_id'] ]['active'])) {
+                                        $checkbox_input->setChecked(!!$db_values[ $row['obj_id'] ]['active']);
+                                    }
                                     $checkbox_input->setValue(true);
                                     echo $checkbox_input->render();
                                     ?>
